@@ -3,9 +3,12 @@ package model;
 import enums.Location;
 import enums.PackageStatus;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class DeliveryPackage {
+public class DeliveryPackage implements Serializable{
+    private static final long serialVersionUID = 1L;
+
     private final int id;
     private Location startLocation;
     private Location endLocation;
@@ -78,14 +81,16 @@ public class DeliveryPackage {
 
     @Override
     public String toString() {
-        return "DeliveryPackage{" +
-                "id=" + id +
-                ", startLocation=" + startLocation +
-                ", endLocation=" + endLocation +
-                ", weight=" + weight +
-                ", contactInfo=" + contactInfo +
-                ", expectedArrival=" + expectedArrival +
-                ", status=" + status +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Package #%d%n", id));
+        sb.append(String.format(" From:     %s%n", startLocation));
+        sb.append(String.format(" To:       %s%n", endLocation));
+        sb.append(String.format(" Weight:   %.1f kg%n", weight));
+        sb.append(String.format(" Contact:  %s%n", contactInfo));
+        sb.append(String.format(" Status:   %s%n", status));
+        if (expectedArrival != null) {
+            sb.append(String.format(" Expected: %s%n", util.DateTimeFormatterUtil.format(expectedArrival)));
+        }
+        return sb.toString();
     }
 }

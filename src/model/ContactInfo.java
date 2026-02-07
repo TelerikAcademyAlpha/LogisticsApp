@@ -1,6 +1,10 @@
 package model;
 
-public class ContactInfo {
+import java.io.Serializable;
+
+public class ContactInfo implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private  String name;
     private String lastName;
     private String address;
@@ -37,10 +41,6 @@ public class ContactInfo {
 
     @Override
     public String toString() {
-        return "ContactInfo{" +
-                "name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", address='" + address + '\'' +
-                '}';
+        return name + " " + lastName + " | " + address;
     }
 }
