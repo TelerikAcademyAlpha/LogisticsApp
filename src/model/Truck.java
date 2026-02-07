@@ -2,7 +2,11 @@ package model;
 
 import enums.TruckModel;
 
-public class Truck {
+import java.io.Serializable;
+
+public class Truck implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final int id;
     private TruckModel model;
     private int capacityKg;
@@ -55,12 +59,8 @@ public class Truck {
 
     @Override
     public String toString() {
-        return "Truck{" +
-                "id=" + id +
-                ", model=" + model +
-                ", capacityKg=" + capacityKg +
-                ", maxRangeKm=" + maxRangeKm +
-                ", assigned=" + assigned +
-                '}';
+        return String.format("Truck #%d [%s] | Capacity: %,d kg | Range: %,d km | %s",
+                id, model, capacityKg, maxRangeKm,
+                assigned ? "ASSIGNED" : "FREE");
     }
 }
