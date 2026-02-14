@@ -15,7 +15,9 @@ public enum Location {
         this.fullName = fullName;
     }
 
-    public String getFullName;
+    public String getFullName() {
+        return fullName;
+    }
 
     /**
      * Resolves user input (abbreviation or full name) to a Location enum.
@@ -41,7 +43,7 @@ public enum Location {
 
         // the opposite site if input is equals to full name
         for (Location l : values()) {
-            if (l.getFullName.equals(trimmedString)) {
+            if (l.getFullName().equals(trimmedString)) {
                 return l;
             }
         }
