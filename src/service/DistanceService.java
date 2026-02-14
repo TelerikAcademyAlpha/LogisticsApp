@@ -2,24 +2,66 @@ package service;
 
 import enums.Location;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DistanceService {
 
-    private static final int[][] D = {
-            {  0, 877,1376,2762, 909,3935,4016}, // SYD
-            {877,  0, 725,2255,1765,3752,3509}, // MEL
-            {1376,725,  0,1530,1927,3027,2785}, // ADL
-            {2762,2255,1530,  0,2993,1497,2481}, // ASP
-            { 909,1765,1927,2993,  0,3426,4311}, // BRI
-            {3935,3752,3027,1497,3426,  0,4025}, // DAR
-            {4016,3509,2785,2481,4311,4025,  0}  // PER
-    };
+    private static final Map<String, Integer> DISTANCES = new HashMap<>();
 
-    public int getDistance(Location from, Location to) {
-        return D[from.ordinal()][to.ordinal()];
+    //this static block will run only once when the program starts
+    static {
+        addDistance(Location.SYD, Location.MEL, 877);
+        addDistance(Location.SYD, Location.ADL, 1376);
+        addDistance(Location.SYD, Location.ASP, 2762);
+        addDistance(Location.SYD, Location.BRI, 909);
+        addDistance(Location.SYD, Location.DAR, 3935);
+        addDistance(Location.SYD, Location.PER, 4016);
+        addDistance(Location.MEL, Location.ADL, 725);
+        addDistance(Location.MEL, Location.ASP, 2255);
+        addDistance(Location.MEL, Location.BRI, 1765);
+        addDistance(Location.MEL, Location.DAR, 3752);
+        addDistance(Location.MEL, Location.PER, 3509);
+        addDistance(Location.ADL, Location.ASP, 1530);
+        addDistance(Location.ADL, Location.BRI, 1927);
+        addDistance(Location.ADL, Location.DAR, 3027);
+        addDistance(Location.ADL, Location.PER, 2785);
+        addDistance(Location.ASP, Location.BRI, 2993);
+        addDistance(Location.ASP, Location.DAR, 1497);
+        addDistance(Location.ASP, Location.PER, 2481);
+        addDistance(Location.BRI, Location.DAR, 3426);
+        addDistance(Location.BRI, Location.PER, 4311);
+        addDistance(Location.DAR, Location.PER, 4025);
     }
 
+    private static void addDistance(Location from, Location to, int km) {
+        DISTANCES.put(key(from, to), km);
+        DISTANCES.put(key(to, from), km);
+    }
+
+    private static String key(Location from, Location to) {
+        return from.name() + "-" + to.name();
+    }
+
+    /**
+     * Returns the distance in km between two locations.
+     *
+     * @throws IllegalArgumentException if the distance is not defined
+     */
+    public int getDistance(Location from, Location to) {
+        if (from == to) return 0;
+        Integer distance = DISTANCES.get(key(from, to));
+        if (distance == null) {
+            throw new IllegalArgumentException(
+                    "No known distance between " + from + " and " + to);
+        }
+        return distance;
+    }
+
+    /**
+     * Calculates total route distance for a list of locations in order.
+     */
     public int calculateTotalDistance(List<Location> locations) {
         int total = 0;
         for (int i = 0; i < locations.size() - 1; i++) {
