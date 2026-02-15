@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TruckRepositoryImplTest {
     private InMemoryDataStoreImpl dataStore;
@@ -51,5 +51,19 @@ public class TruckRepositoryImplTest {
 
         assertEquals(1, repository.findAll().size());
         assertEquals(2001, repository.findAll().get(0).getId());
+    }
+
+    @Test
+    void findByIdReturnsCorrectTruck() {
+        repository.saveAll(createTestFleet());
+
+        Optional<Truck> truck = repository.findById(1001);
+        assertTrue(truck.isPresent());
+        assertAll(
+                () -> assertEquals(1001, truck.get().getId()),
+                () -> assertEquals(TruckModel.SCANIA, truck.get().getModel()),
+                () -> assertEquals(42000, truck.get().getCapacityKg()),
+                () -> assertEquals(8000, truck.get().getMaxRangeKm())
+        );
     }
 }
