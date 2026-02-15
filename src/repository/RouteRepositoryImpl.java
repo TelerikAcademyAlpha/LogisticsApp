@@ -7,6 +7,7 @@ import model.InMemoryData;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class RouteRepositoryImpl implements RouteRepository{
 
@@ -37,11 +38,13 @@ public class RouteRepositoryImpl implements RouteRepository{
 
     @Override
     public List<DeliveryRoute> findByLocations(Location start, Location end) {
-        return Collections.emptyList();
+        return dataStore.getData().getRoutes().stream()
+                .filter(r -> r.servesLocations(start, end))
+                .collect(Collectors.toList());
     }
 
     @Override
     public int generateId() {
-        return 0;
+        return dataStore.getData().generateRouteId();
     }
 }
