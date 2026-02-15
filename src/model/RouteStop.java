@@ -19,6 +19,10 @@ public class RouteStop implements Serializable {
         this.isDeparture = isDeparture;
     }
 
+    public RouteStop(Location location, LocalDateTime time) {
+        this(location, time, false);
+    }
+
     public Location getLocation() {
         return location;
     }

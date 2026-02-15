@@ -8,11 +8,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class RouteServiceImpl implements RouteRepository{
+public class RouteRepositoryImpl implements RouteRepository{
 
     private final InMemoryDataStore dataStore;
 
-    public RouteServiceImpl(InMemoryDataStore dataStore) {
+    public RouteRepositoryImpl(InMemoryDataStore dataStore) {
         this.dataStore = dataStore;
     }
 

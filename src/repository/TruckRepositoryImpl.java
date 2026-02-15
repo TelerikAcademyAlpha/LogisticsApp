@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class TruckServiceImpl implements TruckRepository {
+public class TruckRepositoryImpl implements TruckRepository {
 
     private final InMemoryDataStore dataStore;
 
-    public TruckServiceImpl(InMemoryDataStore dataStore) {
+    public TruckRepositoryImpl(InMemoryDataStore dataStore) {
         this.dataStore = dataStore;
     }
 

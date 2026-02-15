@@ -33,8 +33,7 @@ public class PackageService {
             throw new InvalidInputException("Contact info is required.");
         }
 
-        int id = packageRepository.generateId();
-        DeliveryPackage pkg = new DeliveryPackage(id, startLocation, endLocation, weight, contactInfo, null,PackageStatus.UNASSIGNED);
+        DeliveryPackage pkg = new DeliveryPackage(packageRepository.generateId(), startLocation, endLocation, weight, contactInfo);
         packageRepository.save(pkg);
         return pkg;
     }
