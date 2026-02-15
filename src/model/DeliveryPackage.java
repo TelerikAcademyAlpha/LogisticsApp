@@ -17,14 +17,14 @@ public class DeliveryPackage implements Serializable{
     private LocalDateTime expectedArrival;
     private PackageStatus status;
 
-    public DeliveryPackage(int id, Location startLocation, Location endLocation, double weight, ContactInfo contactInfo, LocalDateTime expectedArrival, PackageStatus status) {
+    public DeliveryPackage(int id, Location startLocation, Location endLocation, double weight, ContactInfo contactInfo) {
         this.id = id;
         this.startLocation = startLocation;
         this.endLocation = endLocation;
         this.weight = weight;
         this.contactInfo = contactInfo;
-        this.expectedArrival = expectedArrival;
-        this.status = status;
+        this.expectedArrival = null;
+        this.status = PackageStatus.UNASSIGNED;
     }
 
     public int getId() {
