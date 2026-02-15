@@ -7,71 +7,87 @@ import model.DeliveryPackage;
 import model.InMemoryData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.PackageService;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PackageRepositoryTest {
     private InMemoryDataStoreImpl dataStore;
     private PackageRepository repository;
+    private PackageService service;
 
     @BeforeEach
     void setUp() {
         dataStore = InMemoryDataStoreImpl.getInstance();
         dataStore.setData(new InMemoryData());
         repository = new PackageRepositoryImpl(dataStore);
+        service = new PackageService(repository);
     }
 
-    private DeliveryPackage pkg(int id) {
-        return new DeliveryPackage(id, Location.SYD, Location.MEL, 10, new ContactInfo("A", "B", "C"));
+    private ContactInfo getTestContact() {
+        return new ContactInfo("A", "B", "C");
     }
 
     @Test
     void saveAndFindById() {
-        repository.save(pkg(1));
-        assertTrue(repository.findById(1).isPresent());
-        assertEquals(1, repository.findById(1).get().getId());
+        DeliveryPackage pkg = service.createPackage(Location.SYD, Location.MEL, 10.0, getTestContact());
+        assertTrue(service.findById(pkg.getId()).isPresent());
+        assertEquals(pkg.getId(), service.findById(pkg.getId()).get().getId());
     }
 
     @Test
     void findByIdNotFound() {
-        assertFalse(repository.findById(999).isPresent());
+        assertFalse(service.findById(999).isPresent());
     }
 
     @Test
     void findAll() {
-        repository.save(pkg(1));
-        repository.save(pkg(2));
-        repository.save(pkg(3));
-        assertEquals(3, repository.findAll().size());
+        service.createPackage(Location.SYD, Location.MEL, 10.0, getTestContact());
+        service.createPackage(Location.MEL, Location.ADL, 15.0, getTestContact());
+        service.createPackage(Location.BRI, Location.SYD, 20.0, getTestContact());
+        assertEquals(3, service.findAll().size());
     }
 
     @Test
     void findByStatus() {
-        DeliveryPackage p1 = pkg(1);
-        DeliveryPackage p2 = pkg(2);
-        DeliveryPackage p3 = pkg(3);
-        p2.setStatus(PackageStatus.ASSIGNED);
-        repository.save(p1);
-        repository.save(p2);
-        repository.save(p3);
+        DeliveryPackage p1 = service.createPackage(Location.SYD, Location.MEL, 10.0, getTestContact());
+        DeliveryPackage p2 = service.createPackage(Location.MEL, Location.ADL, 15.0, getTestContact());
+        DeliveryPackage p3 = service.createPackage(Location.BRI, Location.SYD, 20.0, getTestContact());
+
+        // mark one as assigned
+        service.markAssigned(p2, java.time.LocalDateTime.now());
+
+        List<DeliveryPackage> unassigned = service.findUnassigned();
+        assertEquals(2, unassigned.size());
+
+        // verify through repository that we have the right statuses
         assertEquals(2, repository.findByStatus(PackageStatus.UNASSIGNED).size());
         assertEquals(1, repository.findByStatus(PackageStatus.ASSIGNED).size());
     }
 
     @Test
     void generateIdIncrements() {
-        assertEquals(1, repository.generateId());
-        assertEquals(2, repository.generateId());
-        assertEquals(3, repository.generateId());
+        DeliveryPackage p1 = service.createPackage(Location.SYD, Location.MEL, 10.0, getTestContact());
+        DeliveryPackage p2 = service.createPackage(Location.MEL, Location.ADL, 15.0, getTestContact());
+        DeliveryPackage p3 = service.createPackage(Location.BRI, Location.SYD, 20.0, getTestContact());
+
+        assertEquals(1, p1.getId());
+        assertEquals(2, p2.getId());
+        assertEquals(3, p3.getId());
     }
 
     @Test
     void saveUpdatesExistingPackage() {
-        DeliveryPackage p = pkg(1);
-        repository.save(p);
+        DeliveryPackage p = service.createPackage(Location.SYD, Location.MEL, 10.0, getTestContact());
+        int id = p.getId();
+
+        // saving using repository
         p.setWeight(999);
         repository.save(p);
-        assertEquals(1, repository.findAll().size());
-        assertEquals(999.0, repository.findById(1).get().getWeight(), 0.01);
+
+        assertEquals(1, service.findAll().size());
+        assertEquals(999.0, service.findById(id).get().getWeight(), 0.01);
     }
 }
