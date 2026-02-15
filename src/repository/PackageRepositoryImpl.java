@@ -43,6 +43,6 @@ public class PackageRepositoryImpl implements PackageRepository{
 
     @Override
     public int generateId() {
-        return dataStore.getData().getNextPackageId();
+        return dataStore.getData().generatePackageId();
     }
 }
