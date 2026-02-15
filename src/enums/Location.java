@@ -32,18 +32,11 @@ public enum Location {
             throw new IllegalArgumentException("Location can not be empty.");
         }
 
-        String trimmedString = input.trim().toUpperCase();
+        String trimmedString = input.trim();
 
-        // matching if input is equals to enum name like ex. SYD
         for (Location l : values()) {
-            if (l.name().equals(trimmedString)) {
-                return l;
-            }
-        }
-
-        // the opposite site if input is equals to full name
-        for (Location l : values()) {
-            if (l.getFullName().equals(trimmedString)) {
+            if (l.name().equalsIgnoreCase(trimmedString) ||
+                    l.getFullName().equalsIgnoreCase(trimmedString)) {
                 return l;
             }
         }
